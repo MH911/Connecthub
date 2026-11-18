@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4263eb">
+<title>ConnectHub</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#" id="home-link">Connect<span>Hub</span></a>
+  <button id="logout" class="secondary" hidden>Log out</button>
+  <input id="search" class="search" type="search" placeholder="Search posts" aria-label="Search posts" hidden>
+  <nav id="nav" class="nav" aria-label="Main" hidden>
+    <button data-view="home"><span aria-hidden="true">⌂</span>Home</button>
+    <button data-view="saved"><span aria-hidden="true">☆</span>Saved</button>
+    <button data-view="profile"><span aria-hidden="true">◎</span>Profile</button>
+  </nav>
+</header>
+
+<section id="auth" class="auth-wrap">
+  <div class="intro">
+    <h1>Find your people. Build something together.</h1>
+    <p>Share ideas, join conversations and keep up with your community.</p>
+  </div>
+  <div class="auth-card">
+    <div class="tabs">
+      <button id="show-login" class="active" type="button">Log in</button>
+      <button id="show-register" type="button">Create account</button>
+    </div>
+    <form id="login-form">
+      <h2>Welcome back</h2>
+      <label>Email<input id="login-email" type="email" autocomplete="email" required></label>
+      <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
+      <button class="primary" type="submit">Log in</button>
+    </form>
+    <form id="register-form" hidden>
+      <h2>Join ConnectHub</h2>
+      <label>Your name<input id="register-name" maxlength="40" autocomplete="name" required></label>
+      <label>Email<input id="register-email" type="email" autocomplete="email" required></label>
+      <label>Password (at least 6 characters)<input id="register-password" type="password" minlength="6" autocomplete="new-password" required></label>
+      <button class="primary" type="submit">Create account</button>
+    </form>
+    <p id="auth-message" class="message" role="alert"></p>
+    <small class="note">Demo only: accounts are saved on this device and are not shared with anyone. Don't use a real password.</small>
+  </div>
+</section>
+
+<main id="app" hidden>
+  <section id="home-view" class="view">
+    <h1>Good to see you, <span id="first-name"></span></h1>
+    <form id="post-form" class="panel composer">
+      <textarea id="post-text" maxlength="1000" placeholder="What's on your mind?" aria-label="New post" required></textarea>
+      <div class="composer-bottom">
+        <select id="post-topic" aria-label="Topic">
+          <option value="">No topic</option>
+          <option>Technology</option>
+          <option>Business</option>
+          <option>Lifestyle</option>
+          <option>Learning</option>
+        </select>
+        <small id="char-count">0 / 1000</small>
+        <button class="primary" type="submit">Publish</button>
+      </div>
+    </form>
+    <div class="chips" id="chips" role="group" aria-label="Filter by topic">
+      <button data-topic="" class="active">All</button>
+      <button data-topic="Technology">Technology</button>
+      <button data-topic="Business">Business</button>
+      <button data-topic="Lifestyle">Lifestyle</button>
+      <button data-topic="Learning">Learning</button>
+    </div>
+    <div class="section-heading"><h2 id="feed-heading">Latest posts</h2><small id="feed-count"></small></div>
+    <div id="feed" class="post-list"></div>
+    <p id="empty-home" class="empty" hidden>No posts match. Clear the search or topic, or publish the first one.</p>
+  </section>
+
+  <section id="saved-view" class="view" hidden>
+    <h1>Saved posts</h1>
+    <div id="saved-list" class="post-list"></div>
+    <p id="empty-saved" class="empty" hidden>Nothing saved yet. Tap Save on a post to keep it here.</p>
+  </section>
+
+  <section id="profile-view" class="view" hidden>
+    <div class="cover"></div>
+    <div class="panel profile">
+      <div class="profile-row">
+        <div class="avatar" id="avatar">U</div>
+        <button id="edit-profile" class="secondary" type="button">Edit profile</button>
+      </div>
+      <h1 id="profile-name"></h1>
+      <p id="profile-email" class="muted"></p>
+      <p id="profile-bio"></p>
+      <p><b id="my-count">0</b> posts</p>
+    </div>
+    <h2>My posts</h2>
+    <div id="my-posts" class="post-list"></div>
+    <p id="empty-profile" class="empty" hidden>You haven't posted yet.</p>
+  </section>
+</main>
+
+<dialog id="edit-dialog">
+  <form id="edit-form">
+    <h2>Edit profile</h2>
+    <label>Display name<input id="edit-name" maxlength="40" required></label>
+    <label>About you<textarea id="edit-bio" maxlength="240"></textarea></label>
+    <div class="dialog-actions">
+      <button type="button" id="cancel-edit" class="secondary">Cancel</button>
+      <button class="primary" type="submit">Save changes</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<template id="post-template">
+  <article class="panel post">
+    <div class="post-head">
+      <div class="avatar"></div>
+      <div class="post-author"><b class="author"></b><small class="post-date"></small></div>
+      <button class="delete secondary" type="button">Delete</button>
+    </div>
+    <p class="post-message"></p>
+    <small class="topic-tag" hidden></small>
+    <div class="post-meta"><small class="likes-count"></small><small class="comments-count"></small></div>
+    <div class="actions">
+      <button class="like" type="button">♡ Like</button>
+      <button class="comment-toggle" type="button">Comment</button>
+      <button class="save" type="button">☆ Save</button>
+    </div>
+    <div class="comments" hidden>
+      <div class="comment-list"></div>
+      <form class="comment-form">
+        <input class="comment-input" maxlength="300" placeholder="Write a comment" aria-label="Comment" required>
+        <button class="primary" type="submit">Send</button>
+      </form>
+    </div>
+  </article>
+</template>
+
+<script src="script.js"></script>
+</body>
+</html>
